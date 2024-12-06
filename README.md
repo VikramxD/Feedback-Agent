@@ -1,6 +1,7 @@
-# authless-docker branch specifics
+Hi everyone, this is an ML Based Feedback Analysis Software, feel free to have a look, meanwhile, I'm writing up the docs.
 
-Main goal of the authless-docker branch is to setup benchmarking by allowing it a certain amount of processing power and memory. 
+
+
 
 I have changed a bunch of things for the docker-specific branch. [Other changes like changes to model or core logic are not mentioned here]
 
