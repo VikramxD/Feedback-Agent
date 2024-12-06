@@ -1,0 +1,62 @@
+#############################################
+# 
+#
+#
+##############################################
+
+port: 4242
+
+threading:
+  min: 4
+  max : 8
+  timeout: 30000
+
+routes:
+  
+  put:
+    /entry/:user_id : _/data/upload.zm # uploads the voice record bin to a bucket
+    /users/google : _/users/sign_in_with_google.zm # creates user with Google Sign-On
+
+  post:
+    /meta/:user_id :  _/data/update_meta.zm # update meta information
+    /meta/entries/:user_id : _/data/entries.zm  # get meta entries based on from time, to time, offset, max items
+
+  get:
+    /profile/:user_id : _/users/profile.zm # get users profile to show
+    /analytics/:user_id : _/users/profile.zm # get users analytics dashboard
+    /entry/:user_id/* : _/data/entry.zm # finds one single actual data entry
+
+    /verify: _/users/verify.zm
+
+filters:
+  finally:
+    "*": _/finally.zm
+
+
+plugins:
+  cowj.plugins:
+    
+    file-st: FileBackedStorage::STORAGE
+    
+    aws-sqs: SQSWrapper::SQS 
+    
+    curl: CurlWrapper::CURL
+  
+    auth-jwt: JWTAuthenticator::JWT
+
+    local: SecretManager::LOCAL
+
+
+data-sources:
+  # to run locally as file
+  storage:
+    type: file-st
+    mount-point: _/data/user_data
+
+  google_oauth:
+    type: curl
+    url: https://oauth2.googleapis.com
+
+  local:
+    type: local
+

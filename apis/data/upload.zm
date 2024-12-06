@@ -1,0 +1,26 @@
+/* a file upload end point handler
+   Gets stored in UTC time stamp with
+   raw/yyyy/MM/dd/HH/mm/file-uid-(user_urn).bin
+   as the path to the actual file
+   binary stream to be honest - it would be audio
+*/
+
+BUCKET = "bucket"
+user_urn = req.params("user_id") ?? '__invalid_urn__'
+_log.info("User Urn [{}]", user_urn )
+
+fs = _ds["storage"]
+assert( fs.fileExist( BUCKET, "users/" + user_urn), "user id does not exist" , 404 )
+time_series = fs.timeSeries( BUCKET, "raw", "MIN" )
+body_bytes = req.bodyAsBytes()
+suffix = "-(" + user_urn + ").bin"
+// put data in time series stream in abstracted storage 
+em = time_series.put( suffix, body_bytes )
+
+// that we can do that, is excellent feat of math and engineering
+panic( em.inError , "Saving data failed with error : " + em.error()  )
+
+// In this branch we're using file-watcher
+
+// is this ok? We are not sure
+jstr( {  "did" : em.value } )

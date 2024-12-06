@@ -1,0 +1,10 @@
+# LMAO Added .dockerignore to .dockerignore <https://stackoverflow.com/questions/47580298/can-dockerfile-be-put-in-dockerignore>
+Dockerfile
+.dockerignore
+.git/
+.gitignore
+system-design/
+app/
+*myenv/
+# Don't need the extra bin files
+apis/data/user_data/bucket/raw/*

@@ -1,0 +1,70 @@
+{
+    "$id": "https://journaly/KeyWordEmotion.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "KeyWordEmotion",
+    "type": "object",
+    "properties": {
+      "ts": {
+        "type": "string",
+        "format" : "date-time",
+        "description": "Time stamp of the feedback - when the feedback was given"
+      },
+      "su": {
+        "type": "string",
+        "description": "Bucket url for the feedback - pointing to the sentence analysis file (sentence analysis text url)"
+      },
+      "si": {
+        "type": "integer",
+        "description": "sentence index within the text"
+      },
+      "s": {
+        "type": "string",
+        "description": "sentence from where keyword was extracted"
+      },
+      "keywords" : {
+        "type" : "array", 
+        "description" : "a set of keywords, each can be n-gram extrapolated out of the text",
+        "items" : {
+          "type" : "string", 
+          "description" : "one keyword - can be n-gram"
+        }
+      },
+      "ep": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "description": "positive emotion - ternary rep"
+      },
+      "en": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "description": "negative emotion - ternary rep"
+      },
+
+      "ed_1": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "description": "top scored detailed emotion"
+      },
+
+      "ed_2": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "description": "2nd scored detailed emotion"
+      },
+
+      "user" : {
+        "type": "string",
+        "description": "which user gave the feedback"
+      },
+      "org" : {
+        "type": "string",
+        "description": "which org id the feedback is for"
+      }
+    },
+    "required": [ "ts", "su" , "si", "s", "keywords" , "ep" ,  "en",  "ed_1",  "ed_2",  "user", "org" ] ,
+    "additionalProperties" : true
+}

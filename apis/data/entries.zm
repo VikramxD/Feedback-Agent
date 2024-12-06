@@ -1,0 +1,32 @@
+/* Entry read point handler
+   Gets a user id
+   returns payload with .file : user_urn/raw/yyyy/MM/dd/HH/mm/utc_ts_in_ms
+*/
+
+BUCKET = "bucket"
+user_urn = req.params("user_id") ?? '__invalid_urn__'
+_log.info("User Urn [{}]", user_urn )
+fs = _ds["storage"]
+assert( fs.fileExist( BUCKET, "users/" + user_urn), "user id does not exist" , 404 )
+query = json( req.body() ) ?? {:} // if nothing is found, empty
+def_to_time = time() + "P1D"
+def_from_time = def_to_time - "P6D" // go back 6 days max by default
+from_time = query["from"] ?? int( def_from_time )
+to_time = query["to"] ?? int( def_to_time )
+// this is good stuff now
+time_series = fs.timeSeries( BUCKET, "users/" + user_urn, "DAY" )
+em = time_series.list( from_time, to_time )
+panic( em.inError,  "Loading data failed with error : " + em.error()  )
+// group by the key u42/2024/07/25/07/44/1722528919577_570-(u42).xx.yyy
+g = group( em.value() ) as {
+  #(k,__,__) = $.key.split("\\.")
+  k
+  } as {
+   items = $.value
+   dict( items ) as {
+     #(__,m,__) = $.key.split("\\.")
+     [m, $.value ]
+  }
+}
+// now return
+jstr(g)

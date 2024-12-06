@@ -1,0 +1,6 @@
+_log.info('method: {}, path: {}, status: {}, ip: {}', req.requestMethod, req.uri, resp.status, req.ip)
+
+/// If content type is not set, set it to json by default
+if (empty(resp.raw().getHeader('content-type'))) {
+    resp.header('content-type', 'application/json')
+}

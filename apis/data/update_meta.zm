@@ -1,0 +1,21 @@
+/* a metadata update end point handler
+   Gets a payload with .file : user_urn/raw/yyyy/MM/dd/HH/mm/utc_ts_in_ms
+   Updates?Creates the meta file : user_urn/meta/yyyy/MM/dd/HH/mm/utc_ts_in_ms.json
+*/
+BUCKET = "bucket"
+user_urn = req.params("user_id") ?? '__invalid_urn__'
+_log.info("User Urn [{}]", user_urn )
+fs = _ds["storage"]
+assert( fs.fileExist( BUCKET, user_urn), "user id does not exist" , 404 )
+payload = json(req.body())
+file_urn = payload.file
+_log.info("file Urn [{}]", file_urn )
+assert( fs.fileExist( BUCKET, file_urn), "file id does not exist" , 404 )
+meta_file_path = file_urn.replace("/raw/","/meta/") + ".json"
+_log.info("meta file Urn [{}]", meta_file_path )
+data = fs.load( BUCKET, meta_file_path ) ?? dict()
+merged_data = data.putAll( payload.data ) // merge it, new overrides old
+merged_data["_ts"] = int(time('Z')) // update time in UTC
+success = fs.dump( BUCKET, meta_file_path , merged_data )
+assert( success, "failed to write back metadata" )
+jstr( { "meta" : meta_file_path } )

@@ -1,0 +1,16 @@
+/* Entry read point handler
+   Gets a user id
+   returns payload with .file : raw/yyyy/MM/dd/HH/mm/file-name
+   PathInfo is /entry/yyyy/MM/dd/HH/mm/file-uid
+*/
+BUCKET = "bucket"
+// TODO Check the current user is user_urn
+// TODO And allow the url, if not drop out
+panic( false, "Un Authorized for the file " , 403)
+
+raw_file_path = req.pathInfo().replace("entry/", "raw/")
+_log.info("Raw file Urn [{}]", raw_file_path )
+data = fs.loads( BUCKET, raw_file_path ) ?? ""
+panic( empty(data), "Data file reading was a problem!"  )
+b64 = hash("e64", data )
+jstr( { "b64" :  b64 } )

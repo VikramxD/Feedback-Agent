@@ -1,0 +1,10 @@
+BUCKET = "bucket"
+file_suffix =  ( "/analytics/" @ req.pathInfo() ) ? "analytics.json" : "profile.json"
+user_urn = req.params("user_id") ?? '__invalid_urn__'
+_log.info("User Urn [{}]", user_urn )
+fs = _ds["storage"]
+assert( fs.fileExist( BUCKET, user_urn), "user id does not exist" , 404 )
+file_name = user_urn + "/" + file_suffix
+profile_data = fs.loads( BUCKET, file_name )
+panic( empty(profile_data), "failed to read user profile!" )
+profile_data // return this
