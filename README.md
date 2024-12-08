@@ -18,3 +18,9 @@ I have changed a bunch of things for the docker-specific branch. [Other changes 
  - Cowj needs to be taken care of, I didn't touch it.
 
  - I don't remember what was next. Oh well. I would love if you would try building the image though.
+
+
+
+
+# If you would like to contact me, then feel free to drop a message here or on Linkedin. 
+# Referals, Donations, Job Applications, Internships, Consultancy, anything at all, if you have anything in mind, I'm open to anything, anytime, anyday. THANK YOU FOR VISITING!
