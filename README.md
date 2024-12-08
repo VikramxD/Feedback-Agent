@@ -1,26 +1,140 @@
-Hi everyone, this is an ML Based Feedback Analysis Software, feel free to have a look, meanwhile, I'm writing up the docs.
+# **Journaly - ML-Based Feedback Analysis System**
 
+---
 
+## **System Overview**
 
+Journaly is a mobile application designed for secure journaling and feedback analysis. The system focuses on user data privacy while providing comprehensive journaling and analytics features. It consists of:
 
-I have changed a bunch of things for the docker-specific branch. [Other changes like changes to model or core logic are not mentioned here]
+1. **Frontend**: A Flutter-based mobile application.
+2. **Backend**: Supports security, storage, and AI services.
 
- For instance all of it's dependencies are localized; meaning, before we were supposed to download whisper independently and add the path to voice-2-text.sh. However under the ```whisper/models``` folder, I have added a script that automatically downloads the whisper model for you.
+---
 
- Along with the model you also need the executable. I noticed the executable was ~1.5 megabytes so I pushed it to the repo as well under the ```whisper``` folder. So no headache of building it as such.
+## **Core Components**
 
- Of course, I have modified all the paths to be relative instead, this way would prove much better and intuitive. I call this methodology **general relativity** because of the usage of relative paths.
+### 1. **Mobile Application**
+The frontend is built using Flutter and serves as the user-facing interface.
 
-### TODO
+### 2. **API Endpoints**
+- **Authentication System**
+  - User creation/login
+  - Session handling
+  - User management (deletion/deactivation)
+- **User Profile Management**
+  - Manage user preferences and profile data.
+- **Journaling System**
+  - Record and store voice and text-based journal entries.
+- **Analytics Engine**
+  - Provide detailed insights into user entries.
 
- - The file_watcher already runs, however I am not so sure if the models are being loaded. this is bizarre to me as of right now but I haven't looked into it much anyway.
+### 3. **ML Pipeline**
+The ML system processes user journal entries using a sequence of models to ensure comprehensive and reliable analysis.
 
- - Cowj needs to be taken care of, I didn't touch it.
+---
 
- - I don't remember what was next. Oh well. I would love if you would try building the image though.
+## **ML System Architecture**
 
+The architecture consists of several components designed to analyze journal entries using machine learning models.
 
+### **Models Used**
+1. **Voice to Text (Transcription)**: Converts voice input into text.
+2. **Voice to Emotion**: Detects emotions from voice recordings.
+3. **Text Sentence Correction**: Corrects grammar and spelling in text entries.
+4. **Text to Emotion**: Identifies emotions in written text.
+5. **Named Entity Recognition (NER)**: Extracts key entities from text.
+6. **Binary Sentiment Classification**: Classifies text as positive or negative.
+7. **Rating Prediction**: Predicts ratings based on journal entries.
 
+---
 
-# If you would like to contact me, then feel free to drop a message here or on Linkedin. 
-# Referals, Donations, Job Applications, Internships, Consultancy, anything at all, if you have anything in mind, I'm open to anything, anytime, anyday. THANK YOU FOR VISITING!
+## **ML Pipeline Setup**
+
+### **Prerequisites**
+1. **AWS S3 Setup**
+   - Uses **MountPoint** for accessing S3 as a local filesystem.
+   - Refer to the [MountPoint S3 Documentation](https://github.com/aws/mountpoint-s3) for installation and configuration.
+2. **Whisper Transcription**
+   - Setup based on `whisper.cpp`.
+   - Download the pre-compiled executable (~1.5 MB).
+   - Ensure required libraries are installed: `libstdc++` and `libgomp1`.
+3. **Hugging Face Setup**
+   - Ensure required models are configured and available locally.
+
+---
+
+### **Running the ML Pipeline**
+
+1. **Mount Folders**
+   - Use MountPoint to link appropriate AWS S3 folders locally for input/output data.
+
+2. **Start the SQS Consumer**
+   - Run the SQS consumer service to process incoming journal entries.
+
+3. **Testing and Debugging**
+   - For debugging, run individual pipeline components to ensure correctness.
+
+---
+
+## **System Requirements**
+
+- **Memory Requirements**
+  - **RAM**: ~3GB RSS memory
+  - **Virtual Memory**: ~11GB
+- **Environment Recommendations**
+  - Use an isolated machine for running the pipeline (preferred over Docker).
+
+---
+
+## **Output Format**
+
+The system outputs analysis results in JSON format, with the following structure:
+
+```json
+{
+  "transcription": "Transcribed text from voice input.",
+  "emotion_analysis": {
+    "voice_emotion": "Emotion from voice",
+    "text_emotion": "Emotion from text"
+  },
+  "corrected_text": "Corrected text entry",
+  "named_entities": [
+    {"entity": "Name", "type": "Person"},
+    {"entity": "Place", "type": "Location"}
+  ],
+  "sentiment": "Positive/Negative",
+  "rating": 4.5
+}
+```
+
+---
+
+## **Development Notes**
+
+- **Dependencies**
+  - All dependencies are localized to the project directory.
+  - Whisper model downloads are automated.
+- **File Structure**
+  - Uses relative paths for easier portability.
+- **Message Queue**
+  - AWS SQS is used for processing voice journal entries asynchronously.
+- **Features**
+  - Automatic model loading and file watching capabilities.
+
+---
+
+## **TODOs**
+
+1. **Model Loading**
+   - Verify functionality in the `file_watcher` component.
+2. **Integration Tasks**
+   - Complete integration with Cowj.
+3. **Documentation**
+   - Expand detailed descriptions for each model.
+   - Add sections for enterprise-specific features.
+
+---
+
+--- 
+
+This document aims to serve as a comprehensive reference for developers setting up and working with the Journaly repository.
