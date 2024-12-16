@@ -1,1 +1,0 @@
-jstr({ 'data': req.attribute('user-data') })
